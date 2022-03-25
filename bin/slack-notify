@@ -22,7 +22,11 @@ fi
 
 SLACK_MESSAGE="$@"
 
-response=$(curl -s -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Bearer $SLACK_TOKEN" https://slack.com/api/chat.postMessage -d "channel=$SLACK_CHANNEL" -d "text=$SLACK_MESSAGE" -d "thread_ts=$SLACK_THREAD_TS")
+if [[ ! -z "$SLACK_MESSAGE_PREFIX" ]]; then
+    SLACK_MESSAGE="$SLACK_MESSAGE_PREFIX $SLACK_MESSAGE"
+fi
+
+response=$(curl -s -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Bearer $SLACK_TOKEN" https://slack.com/api/chat.postMessage -d "channel=$SLACK_CHANNEL" -d "text=$SLACK_MESSAGE" -d "thread_ts=$SLACK_THREAD_TS" -d "type=mkdwn" -d "username=$SLACK_USERNAME" -d "icon_emoji=$SLACK_ICON_EMOJI")
 
 if [[ "$response" == *"\"ok\":true"* ]]; then
     SLACK_THREAD_TS=${response#*\"ts\":\"}

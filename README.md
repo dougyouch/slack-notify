@@ -41,6 +41,9 @@ example:
 ```
 export SLACK_TOKEN="xyzb-1111-1111-ZZ"
 export SLACK_CHANNEL="#bot_notifications"
+export SLACK_USERNAME=$(hostname -s)
+export SLACK_ICON_EMOJI=":large_blue_circle:"
+export SLACK_MESSAGE_PREFIX="$APP_ENV: "
 ```
 
 Install the slack-notify script
