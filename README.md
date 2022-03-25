@@ -1,6 +1,8 @@
 # slack-notify
 
-Command line tool for sending slack messages
+Command line tool for sending slack messages.
+
+In my world, I quite often need to run long running scripts in screen(s).  This simple script comes in handy to get notifications about when my scripts complete.  So, I can move on to the next part of the process.
 
 # Basic Usage
 
@@ -16,7 +18,7 @@ The script outputs the thread timestamp.  This timestamp can be passed back to s
 
 ```
 export SLACK_CHANNEL="#notifications"
-export SLACK\_THREAD\_TS=$(slack-notify script started)
+export SLACK_THREAD_TS=$(slack-notify script started)
 sleep 1
 slack-notify download complete
 sleep 1
@@ -30,3 +32,20 @@ slack-notify finished
 Requires the Slack API token to be configured into an environment variable SLACK_TOKEN.
 
 To create a Slack API token goto [https://api.slack.com/tutorials/tracks/getting-a-token](https://api.slack.com/tutorials/tracks/getting-a-token)
+
+# Recommended Installation
+
+Create a /etc/profile.d/slack.sh with
+
+example:
+```
+export SLACK_TOKEN="xyzb-1111-1111-ZZ"
+export SLACK_CHANNEL="#bot_notifications"
+```
+
+Install the slack-notify script
+
+```
+curl -s https://raw.githubusercontent.com/dougyouch/slack-notify/main/bin/slack-notify -o /usr/local/bin/slack-nofity
+chmod 755 /usr/local/bin/slack-nofity
+```
