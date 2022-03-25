@@ -22,10 +22,12 @@ fi
 
 SLACK_MESSAGE="$@"
 
-response=$(curl -s -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Bearer $SLACK_TOKEN" https://slack.com/api/chat.postMessage -d "channel=$SLACK_CHANNEL" -d "text=$SLACK_MESSAGE")
+response=$(curl -s -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Bearer $SLACK_TOKEN" https://slack.com/api/chat.postMessage -d "channel=$SLACK_CHANNEL" -d "text=$SLACK_MESSAGE" -d "thread_ts=$SLACK_THREAD_TS")
 
 if [[ "$response" == *"\"ok\":true"* ]]; then
-    echo "$response"
+    SLACK_THREAD_TS=${response#*\"ts\":\"}
+    SLACK_THREAD_TS=${SLACK_THREAD_TS%%\"*}
+    echo "$SLACK_THREAD_TS"
 else
     echo "failed to send message"
     echo "$response"
