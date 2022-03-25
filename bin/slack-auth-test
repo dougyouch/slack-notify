@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if ! which curl > /dev/null 2>&1; then
+    echo "curl is required to test SLACK_TOKEN"
+    exit 1
+fi
+
+if [ "$SLACK_TOKEN" = "" ]; then
+    echo "SLACK_TOKEN not set"
+    exit 1
+fi
+
+response=$(curl -s -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Bearer $SLACK_TOKEN" https://slack.com/api/auth.test)
+
+if [[ "$response" == *"\"ok\":true"* ]]; then
+    echo "valid SLACK_TOKEN"
+else
+    echo "invalid SLACK_TOKEN"
+    echo "$response"
+    exit 1
+fi

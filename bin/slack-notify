@@ -10,6 +10,11 @@ if [ "$SLACK_TOKEN" = "" ]; then
     exit 1
 fi
 
+if [[ "$1" == "@"* ]]; then
+    SLACK_CHANNEL=${1:1}
+    shift
+fi
+
 if [ "$SLACK_CHANNEL" = "" ]; then
     echo "SLACK_CHANNEL not set"
     exit 1
@@ -17,4 +22,12 @@ fi
 
 SLACK_MESSAGE="$@"
 
-curl -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Bearer $SLACK_TOKEN" https://slack.com/api/chat.postMessage -d "channel=$SLACK_CHANNEL" -d "text=$SLACK_MESSAGE"
+response=$(curl -s -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Bearer $SLACK_TOKEN" https://slack.com/api/chat.postMessage -d "channel=$SLACK_CHANNEL" -d "text=$SLACK_MESSAGE")
+
+if [[ "$response" == *"\"ok\":true"* ]]; then
+    echo "$response"
+else
+    echo "failed to send message"
+    echo "$response"
+    exit 1
+fi
