@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Purpose: to replace @username with <@11111111> slack profile id
+
+MESSAGE="$@"
+
+if [ "$SLACK_USER_CONF" = "" ]; then
+    SLACK_USER_CONF="/etc/slack-user.conf"
+fi
+
+if [ ! -f "$SLACK_USER_CONF" ]; then
+    echo "$MESSAGE"
+    exit
+fi
+
+MESSAGE_COPY="$MESSAGE"
+USERNAME_REGEX="(@[A-Za-z0-9_]*)"
+
+while [[ ${MESSAGE_COPY} =~ (${USERNAME_REGEX}) ]]; do
+    USERNAME=${BASH_REMATCH[1]:1}
+    PROFILE_ID=$(grep "^$USERNAME:" $SLACK_USER_CONF | cut -d ':' -f 2)
+
+    if [[ ! -z "$PROFILE_ID" ]]; then
+	MESSAGE=${MESSAGE/"@$USERNAME"/"<@$PROFILE_ID>"}
+    fi
+
+    MESSAGE_COPY=${MESSAGE_COPY#*${BASH_REMATCH[1]}}
+done
+
+echo "$MESSAGE"
