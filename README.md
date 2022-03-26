@@ -49,6 +49,6 @@ export SLACK_MESSAGE_PREFIX="$APP_ENV: "
 Install the slack-notify script
 
 ```
-curl -s https://raw.githubusercontent.com/dougyouch/slack-notify/main/bin/slack-notify -o /usr/local/bin/slack-nofity
-chmod 755 /usr/local/bin/slack-nofity
+curl -s https://raw.githubusercontent.com/dougyouch/slack-notify/main/bin/slack-notify -o /usr/local/bin/slack-notify
+chmod 755 /usr/local/bin/slack-notify
 ```
