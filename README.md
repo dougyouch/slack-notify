@@ -27,6 +27,30 @@ sleep 1
 slack-notify finished
 ```
 
+# slack-message-formatter
+
+Purpose is the conveniently replace usernames with Slack Profile IDs.
+
+example:
+
+```
+slack-message-formatter Hey, @bob your download is ready https://example.com/download.zip
+```
+
+Outputs:
+```
+Hey, <@U888888IIIZ> your download is ready https://example.com/download.zip
+```
+
+### slack-message-formatter Requirements
+
+A file that maps usernames to Slack Profile ID(s).  By default it checks for a /etc/slack-users.conf file.  To change the file's location set the SLACK\_USER\_CONF to the correct location.
+
+example:
+```
+bob:U888888IIIZ
+```
+
 # Setup
 
 Requires the Slack API token to be configured into an environment variable SLACK_TOKEN.
