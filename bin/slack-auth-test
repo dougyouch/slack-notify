@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if ! which curl > /dev/null 2>&1; then
     echo "curl is required to test SLACK_TOKEN"

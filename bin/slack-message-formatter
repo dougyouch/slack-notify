@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Purpose: to replace @username with <@11111111> slack profile id
 
