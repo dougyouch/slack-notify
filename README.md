@@ -44,7 +44,7 @@ Hey, <@U888888IIIZ> your download is ready https://example.com/download.zip
 
 ### slack-message-formatter Requirements
 
-A file that maps usernames to Slack Profile ID(s).  By default it checks for a /etc/slack-users.conf file.  To change the file's location set the SLACK\_USER\_CONF to the correct location.
+A file that maps usernames to Slack Profile ID(s).  By default it checks for a /etc/slack-user.conf file.  To change the file's location set the SLACK\_USER\_CONF to the correct location.
 
 example:
 ```
@@ -70,9 +70,13 @@ export SLACK_ICON_EMOJI=":large_blue_circle:"
 export SLACK_MESSAGE_PREFIX="$APP_ENV: "
 ```
 
-Install the slack-notify script
+Install the scripts
 
 ```
-curl -s https://raw.githubusercontent.com/dougyouch/slack-notify/main/bin/slack-notify -o /usr/local/bin/slack-notify
-chmod 755 /usr/local/bin/slack-notify
+for script in slack-notify slack-auth-test slack-message-formatter; do
+  curl -s https://raw.githubusercontent.com/dougyouch/slack-notify/main/bin/$script -o /usr/local/bin/$script
+  chmod 755 /usr/local/bin/$script
+done
 ```
+
+Verify the token with `slack-auth-test`.

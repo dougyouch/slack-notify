@@ -1,12 +1,12 @@
 #!/bin/bash
 
 if ! which curl > /dev/null 2>&1; then
-    echo "curl is required to send notifications"
+    echo "curl is required to send notifications" >&2
     exit 1
 fi
 
 if [ "$SLACK_TOKEN" = "" ]; then
-    echo "SLACK_TOKEN not set"
+    echo "SLACK_TOKEN not set" >&2
     exit 1
 fi
 
@@ -16,24 +16,24 @@ if [[ "$1" == "@"* ]]; then
 fi
 
 if [ "$SLACK_CHANNEL" = "" ]; then
-    echo "SLACK_CHANNEL not set"
+    echo "SLACK_CHANNEL not set" >&2
     exit 1
 fi
 
 SLACK_MESSAGE="$@"
 
 if [[ ! -z "$SLACK_MESSAGE_PREFIX" ]]; then
-    SLACK_MESSAGE="$SLACK_MESSAGE_PREFIX $SLACK_MESSAGE"
+    SLACK_MESSAGE="${SLACK_MESSAGE_PREFIX% } $SLACK_MESSAGE"
 fi
 
-response=$(curl -s -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Bearer $SLACK_TOKEN" https://slack.com/api/chat.postMessage -d "channel=$SLACK_CHANNEL" -d "text=$SLACK_MESSAGE" -d "thread_ts=$SLACK_THREAD_TS" -d "type=mkdwn" -d "username=$SLACK_USERNAME" -d "icon_emoji=$SLACK_ICON_EMOJI")
+response=$(curl -s -H "Authorization: Bearer $SLACK_TOKEN" https://slack.com/api/chat.postMessage --data-urlencode "channel=$SLACK_CHANNEL" --data-urlencode "text=$SLACK_MESSAGE" --data-urlencode "thread_ts=$SLACK_THREAD_TS" --data-urlencode "username=$SLACK_USERNAME" --data-urlencode "icon_emoji=$SLACK_ICON_EMOJI")
 
 if [[ "$response" == *"\"ok\":true"* ]]; then
     SLACK_THREAD_TS=${response#*\"ts\":\"}
     SLACK_THREAD_TS=${SLACK_THREAD_TS%%\"*}
     echo "$SLACK_THREAD_TS"
 else
-    echo "failed to send message"
-    echo "$response"
+    echo "failed to send message" >&2
+    echo "$response" >&2
     exit 1
 fi

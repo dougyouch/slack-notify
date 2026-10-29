@@ -13,18 +13,24 @@ if [ ! -f "$SLACK_USER_CONF" ]; then
     exit
 fi
 
-MESSAGE_COPY="$MESSAGE"
-USERNAME_REGEX="(@[A-Za-z0-9_]*)"
+# Walk the message left to right so @bob never matches inside an earlier @bobby
+RESULT=""
+REMAINING="$MESSAGE"
+USERNAME_REGEX="@([A-Za-z0-9_]+)"
 
-while [[ ${MESSAGE_COPY} =~ (${USERNAME_REGEX}) ]]; do
-    USERNAME=${BASH_REMATCH[1]:1}
-    PROFILE_ID=$(grep "^$USERNAME:" $SLACK_USER_CONF | cut -d ':' -f 2)
+while [[ ${REMAINING} =~ ${USERNAME_REGEX} ]]; do
+    MATCH=${BASH_REMATCH[0]}
+    USERNAME=${BASH_REMATCH[1]}
+    PROFILE_ID=$(grep -m 1 "^$USERNAME:" "$SLACK_USER_CONF" | cut -d ':' -f 2)
 
+    RESULT="$RESULT${REMAINING%%"$MATCH"*}"
     if [[ ! -z "$PROFILE_ID" ]]; then
-	MESSAGE=${MESSAGE/"@$USERNAME"/"<@$PROFILE_ID>"}
+        RESULT="$RESULT<@$PROFILE_ID>"
+    else
+        RESULT="$RESULT$MATCH"
     fi
 
-    MESSAGE_COPY=${MESSAGE_COPY#*${BASH_REMATCH[1]}}
+    REMAINING=${REMAINING#*"$MATCH"}
 done
 
-echo "$MESSAGE"
+echo "$RESULT$REMAINING"
